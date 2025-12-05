@@ -1,0 +1,78 @@
+[submodule "repositories/microtenant"]
+	path = repositories/microtenant
+	url = git@github.com:hanafalah/microtenant.git
+[submodule "repositories/laravel-support"]
+	path = repositories/laravel-support
+	url = git@github.com:hanafalah/laravel-support.git
+[submodule "repositories/laravel-has-props"]
+	path = repositories/laravel-has-props
+	url = git@github.com:hanafalah/laravel-has-props.git
+[submodule "repositories/module-employee"]
+	path = repositories/module-employee
+	url = git@github.com:hanafalah/module-employee.git
+[submodule "repositories/module-user"]
+	path = repositories/module-user
+	url = git@github.com:hanafalah/module-user.git
+[submodule "repositories/api-helper"]
+	path = repositories/api-helper
+	url = git@github.com:hanafalah/api-helper.git
+[submodule "repositories/module-organization"]
+	path = repositories/module-organization
+	url = git@github.com:hanafalah/module-organization.git
+[submodule "repositories/module-people"]
+	path = repositories/module-people
+	url = git@github.com:hanafalah/module-people.git
+[submodule "repositories/module-card-identity"]
+	path = repositories/module-card-identity
+	url = git@github.com:hanafalah/module-card-identity.git
+[submodule "repositories/module-workspace"]
+	path = repositories/module-workspace
+	url = git@github.com:hanafalah/module-workspace.git
+[submodule "repositories/module-service"]
+	path = repositories/module-service
+	url = git@github.com:hanafalah/module-service.git
+[submodule "repositories/module-item"]
+	path = repositories/module-item
+	url = git@github.com:hanafalah/module-item.git
+[submodule "repositories/module-payer"]
+	path = repositories/module-payer
+	url = git@github.com:hanafalah/module-payer.git
+[submodule "repositories/module-transaction"]
+	path = repositories/module-transaction
+	url = git@github.com:hanafalah/module-transaction.git
+[submodule "repositories/laravel-package-generator"]
+	path = repositories/laravel-package-generator
+	url = git@github.com:hanafalah/laravel-package-generator.git
+[submodule "repositories/module-payment"]
+	path = repositories/module-payment
+	url = git@github.com:hanafalah/module-payment.git
+[submodule "repositories/laravel-feature"]
+	path = repositories/laravel-feature
+	url = git@github.com:hanafalah/laravel-feature.git
+[submodule "repositories/module-license"]
+	path = repositories/module-license
+	url = git@github.com:hanafalah/module-license.git
+[submodule "repositories/laravel-permission"]
+	path = repositories/laravel-permission
+	url = git@github.com:hanafalah/laravel-permission.git
+[submodule "repositories/laravel-stub"]
+	path = repositories/laravel-stub
+	url = git@github.com:hanafalah/laravel-stub.git
+[submodule "repositories/module-summary"]
+	path = repositories/module-summary
+	url = git@github.com:hanafalah/module-summary.git
+[submodule "repositories/module-encoding"]
+	path = repositories/module-encoding
+	url = git@github.com:hanafalah/module-encoding.git
+[submodule "repositories/module-support"]
+	path = repositories/module-support
+	url = git@github.com:hanafalah/module-support.git
+[submodule "repositories/module-event"]
+	path = repositories/module-event
+	url = git@github.com:hanafalah/module-event.git
+[submodule "repositories/module-tax"]
+	path = repositories/module-tax
+	url = git@github.com:hanafalah/module-tax.git
+[submodule "projects/finance-hq"]
+	path = projects/finance-hq
+	url = git@github.com:hanafalah/finance-hq.git
