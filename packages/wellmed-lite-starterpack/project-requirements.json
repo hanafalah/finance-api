@@ -1,9 +1,0 @@
-{
-    "require": {
-        "wellmed-lite/ms-apotek": "dev-main",
-        "wellmed-lite/ms-emr": "dev-main",
-        "wellmed-lite/ms-hr": "dev-main",
-        "wellmed-lite/ms-point-of-sale": "dev-main",
-        "wellmed-lite/ms-scm": "dev-main"
-    }
-}
