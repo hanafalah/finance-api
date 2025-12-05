@@ -1,0 +1,148 @@
+services:
+  finance:
+    container_name: finance-app
+    image: finance-app
+    build:
+      context: .
+      dockerfile: ./docker/common/Dockerfile
+      target: staging
+    ports:
+      - "${FINANCE_PORT:-9100}:${FINANCE_PORT:-9100}"
+    volumes:
+      - ./repositories:/app/repositories
+      - ./app:/app/app
+      - ./config:/app/config
+      - ./public:/app/public
+      - ./database:/app/database
+      - ./projects/finance-gateway:/app/projects/finance-gateway
+      - ./routes/api.php:/app/routes/api.php
+      - ./composer.json:/app/composer.json
+      - ./.env:/app/.env
+      - finance_storage:/app/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9100 || exit 1"]
+    networks:
+      - finance-app
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    env_file:
+      - .env
+    environment:
+        PHP_INI_SCAN_DIR: /usr/local/etc/php/conf.d
+        PHP_UPLOAD_MAX_FILESIZE: 10M
+        PHP_POST_MAX_SIZE: 10M
+
+  finance_listener:
+    container_name: finance-listener
+    image: finance-app
+    volumes:
+      - ./repositories:/app/repositories
+      - ./app:/app/app
+      - ./config:/app/config
+      - ./public:/app/public
+      - ./database:/app/database
+      - ./projects/finance-gateway:/app/projects/finance-gateway
+      - ./routes/api.php:/app/routes/api.php
+      - ./composer.json:/app/composer.json
+      - ./.env:/app/.env
+      - finance_storage:/app/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    ports:
+      - "9108:9108"
+    networks:
+      - finance-app
+    entrypoint: ["/usr/local/bin/entrypoint.worker.sh"]     # <— WORKER MODE
+    depends_on:
+      - finance
+    env_file:
+      - .env
+
+  finance_hq:
+    container_name: finance-hq
+    image: finance-hq
+    build:
+      context: .
+      dockerfile: ./docker/common/Dockerfile-hq
+      target: development
+    ports:
+      - "${FINANCE_HQ_PORT:-9104}:${FINANCE_HQ_PORT:-9104}"
+    volumes:
+      - ./repositories:/app/repositories
+      - ./app:/app/app
+      - ./projects/finance-hq:/app/projects/finance-hq
+      - ./config:/app/config
+      - ./public:/app/public
+      - ./routes:/app/routes
+      - ./database:/app/database
+      - ./routes/api-hq.php:/app/routes/api.php
+      - ./.env.hq:/app/.env
+      - ./composer_hq.json:/app/composer.json
+      - finance_hq_storage:/app/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9104 || exit 1"]
+    networks:
+      - finance-app
+    entrypoint: ["/usr/local/bin/entrypoint.hq.sh"]
+    env_file:
+      - .env.hq
+    environment:
+        PHP_INI_SCAN_DIR: /usr/local/etc/php/conf.d
+        PHP_UPLOAD_MAX_FILESIZE: 10M
+        PHP_POST_MAX_SIZE: 10M
+
+  wellmed_rabbitmq:
+    image: rabbitmq:3-management
+    container_name: rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+    environment:
+      RABBITMQ_DEFAULT_USER: admin
+      RABBITMQ_DEFAULT_PASS: admin
+    volumes:
+      - rabbitmq_data:/var/lib/rabbitmq
+    networks:
+      - wellmed-core
+
+  wellmed_postgres:
+    image: postgres:15
+    container_name: wellmed-postgres
+    ports:
+      - "5433:5432"
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: Password@123
+      POSTGRES_DB: wellmed
+    volumes:
+      - pgsql_data:/var/lib/postgresql/data
+    networks:
+      - wellmed-core
+
+  wellmed_redis:
+    image: redis:7
+    container_name: wellmed-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis_data:/data
+    networks:
+      - wellmed-core
+
+networks:
+  wellmed-core:
+    driver: bridge
+
+volumes:  
+  finance_storage:
+  finance_listener:
+  finance_hq_storage:
+  redis_data:
+  pgsql_data:
+  rabbitmq_data:

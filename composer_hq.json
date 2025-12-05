@@ -1,6 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
     "type": "project",
     "description": "The skeleton application for the Laravel framework.",
     "keywords": [
@@ -9,33 +7,37 @@
     ],
     "license": "MIT",
     "require": {
-        "php": "^8.2",
+        "php": "^8.4",
         "elasticsearch/elasticsearch": "^9.2",
-        "kreait/laravel-firebase": "^6.0",
+        "league/flysystem-aws-s3-v3": "^3.30",
         "hanafalah/microtenant": "dev-main",
+        "kreait/laravel-firebase": "^6.0",
+        "laravel/framework": "^12.0",
         "laravel/octane": "^2.11",
         "laravel/prompts": "^0.3.5",
         "laravel/sanctum": "^4.0",
-        "php-amqplib/php-amqplib": "^3.7",
+        "laravel/tinker": "^2.10.1",
         "predis/predis": "^3.0",
-        "laravel/framework": "^12.0",
-        "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.4",
-        "laravel/tinker": "^2.10.1"
+        "xendit/xendit-php": "^7.0",
+        "vladimir-yuldashev/laravel-queue-rabbitmq": "^14.4"
     },
     "require-dev": {
         "opcodesio/log-viewer": "^3.21",
         "fakerphp/faker": "^1.23",
         "laravel/pail": "^1.2.2",
-        "laravel/pint": "^1.24",
+        "laravel/pint": "^1.18",
         "laravel/sail": "^1.41",
         "mockery/mockery": "^1.6",
-        "nunomaduro/collision": "^8.6",
-        "phpunit/phpunit": "^11.5.3"
+        "pestphp/pest": "^3.8",
+        "pestphp/pest-plugin-laravel": "^3.2"
     },
     "autoload": {
+        "files": [
+            "app/helper.php"
+        ],
         "psr-4": {
             "App\\": "app/",
-            "Hanafalah\\MicroTenant\\": "repositories/microtenant/src/",
+            "Projects\\Hq\\": "projects/hq/src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
@@ -46,22 +48,6 @@
         }
     },
     "scripts": {
-        "setup": [
-            "composer install",
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\"",
-            "@php artisan key:generate",
-            "@php artisan migrate --force",
-            "npm install",
-            "npm run build"
-        ],
-        "dev": [
-            "Composer\\Config::disableProcessTimeout",
-            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite --kill-others"
-        ],
-        "test": [
-            "@php artisan config:clear --ansi",
-            "@php artisan test"
-        ],
         "post-autoload-dump": [
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi"
@@ -77,8 +63,18 @@
             "@php -r \"file_exists('database/database.sqlite') || touch('database/database.sqlite');\"",
             "@php artisan migrate --graceful --ansi"
         ],
-        "pre-package-uninstall": [
-            "Illuminate\\Foundation\\ComposerScripts::prePackageUninstall"
+        "dev": [
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"npm run dev\" --names=server,queue,logs,vite"
+        ],
+        "dev:ssr": [
+            "npm run build:ssr",
+            "Composer\\Config::disableProcessTimeout",
+            "npx concurrently -c \"#93c5fd,#c4b5fd,#fb7185,#fdba74\" \"php artisan serve\" \"php artisan queue:listen --tries=1\" \"php artisan pail --timeout=0\" \"php artisan inertia:start-ssr\" --names=server,queue,logs,ssr"
+        ],
+        "test": [
+            "@php artisan config:clear --ansi",
+            "@php artisan test"
         ]
     },
     "extra": {
@@ -95,12 +91,61 @@
             "php-http/discovery": true
         }
     },
-        "minimum-stability": "dev",
+    "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": {
-        "projects/finance-api": {
+        "projects/hq": {
             "type": "path",
-            "url": "projects/finance-api",
+            "url": "projects/hq",
+            "optimize": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-license": {
+            "type": "path",
+            "url": "repositories/module-license",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-profession": {
+            "type": "path",
+            "url": "repositories/module-profession",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-medic-service": {
+            "type": "path",
+            "url": "repositories/module-medic-service",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-card-identity": {
+            "type": "path",
+            "url": "repositories/module-card-identity",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/wellmed-product": {
+            "type": "path",
+            "url": "repositories/wellmed-product",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/laravel-stub": {
+            "type": "path",
+            "url": "repositories/laravel-stub",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/wellmed-feature": {
+            "type": "path",
+            "url": "repositories/wellmed-feature",
             "options": {
                 "symlink": true
             }
@@ -112,10 +157,38 @@
                 "symlink": true
             }
         },
-        "hanafalah/module-license": {
+        "hanafalah/laravel-has-props": {
             "type": "path",
-            "url": "repositories/module-license",
-            "options": {
+            "url": "repositories/laravel-has-props",
+            "optimize": {
+                "symlink": true
+            }
+        },
+        "hanafalah/laravel-support": {
+            "type": "path",
+            "url": "repositories/laravel-support",
+            "optimize": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-service": {
+            "type": "path",
+            "url": "repositories/module-service",
+            "optimize": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-support": {
+            "type": "path",
+            "url": "repositories/module-support",
+            "optimize": {
+                "symlink": true
+            }
+        },
+        "hanafalah/microtenant": {
+            "type": "path",
+            "url": "repositories/microtenant",
+            "optimize": {
                 "symlink": true
             }
         },
@@ -133,55 +206,6 @@
                 "symlink": true
             }
         },
-        "hanafalah/laravel-has-props": {
-            "type": "path",
-            "url": "repositories/laravel-has-props",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/laravel-package-generator": {
-            "type": "path",
-            "url": "repositories/laravel-package-generator",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/laravel-permission": {
-            "type": "path",
-            "url": "repositories/laravel-permission",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/laravel-stub": {
-            "type": "path",
-            "url": "repositories/laravel-stub",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/laravel-support": {
-            "type": "path",
-            "url": "repositories/laravel-support",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/microtenant": {
-            "type": "path",
-            "url": "repositories/microtenant",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-encoding": {
-            "type": "path",
-            "url": "repositories/module-encoding",
-            "options": {
-                "symlink": true
-            }
-        },
         "hanafalah/module-user": {
             "type": "path",
             "url": "repositories/module-user",
@@ -189,72 +213,9 @@
                 "symlink": true
             }
         },
-        "hanafalah/module-workspace": {
+        "hanafalah/module-regional": {
             "type": "path",
-            "url": "repositories/module-workspace",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-employee": {
-            "type": "path",
-            "url": "repositories/module-employee",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-organization": {
-            "type": "path",
-            "url": "repositories/module-organization",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-payer": {
-            "type": "path",
-            "url": "repositories/module-payer",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-payment": {
-            "type": "path",
-            "url": "repositories/module-payment",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-card-identity": {
-            "type": "path",
-            "url": "repositories/module-card-identity",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-people": {
-            "type": "path",
-            "url": "repositories/module-people",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-service": {
-            "type": "path",
-            "url": "repositories/module-service",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-summary": {
-            "type": "path",
-            "url": "repositories/module-summary",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-support": {
-            "type": "path",
-            "url": "repositories/module-support",
+            "url": "repositories/module-regional",
             "options": {
                 "symlink": true
             }
@@ -266,23 +227,72 @@
                 "symlink": true
             }
         },
-        "hanafalah/module-item": {
-            "type": "path",
-            "url": "repositories/module-item",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-event": {
-            "type": "path",
-            "url": "repositories/module-event",
-            "options": {
-                "symlink": true
-            }
-        },
         "hanafalah/module-tax": {
             "type": "path",
             "url": "repositories/module-tax",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-workspace": {
+            "type": "path",
+            "url": "repositories/module-workspace",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/laravel-permission": {
+            "type": "path",
+            "url": "repositories/laravel-permission",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/laravel-package-generator": {
+            "type": "path",
+            "url": "repositories/laravel-package-generator",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-encoding": {
+            "type": "path",
+            "url": "repositories/module-encoding",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-people": {
+            "type": "path",
+            "url": "repositories/module-people",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-employee": {
+            "type": "path",
+            "url": "repositories/module-employee",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-payment": {
+            "type": "path",
+            "url": "repositories/module-payment",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-payer": {
+            "type": "path",
+            "url": "repositories/module-payer",
+            "options": {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-organization": {
+            "type": "path",
+            "url": "repositories/module-organization",
             "options": {
                 "symlink": true
             }

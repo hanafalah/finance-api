@@ -1,0 +1,108 @@
+services:
+  finance:
+    container_name: finance-app
+    image: finance-app
+    build:
+      context: .
+      dockerfile: ./docker/common/Dockerfile
+      target: development
+    ports:
+      - "${FINANCE_PORT:-9100}:${FINANCE_PORT:-9100}"
+    volumes:
+      - ./repositories:/app/repositories
+      - ./app:/app/app
+      - ./config:/app/config
+      - ./public:/app/public
+      - ./database:/app/database
+      - ./projects/finance-gateway:/app/projects/finance-gateway
+      - ./routes/api.php:/app/routes/api.php
+      - ./composer.json:/app/composer.json
+      - ./.env:/app/.env
+      - finance_storage:/app/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9100 || exit 1"]
+    networks:
+      - caddy-projects
+    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    env_file:
+      - .env
+    environment:
+        PHP_INI_SCAN_DIR: /usr/local/etc/php/conf.d
+        PHP_UPLOAD_MAX_FILESIZE: 10M
+        PHP_POST_MAX_SIZE: 10M
+
+  finance_listener:
+    container_name: finance-listener
+    image: finance-app
+    volumes:
+      - ./repositories:/app/repositories
+      - ./app:/app/app
+      - ./config:/app/config
+      - ./public:/app/public
+      - ./database:/app/database
+      - ./projects/finance-gateway:/app/projects/finance-gateway
+      - ./routes/api.php:/app/routes/api.php
+      - ./composer.json:/app/composer.json
+      - ./.env:/app/.env
+      - finance_storage:/app/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    ports:
+      - "9108:9108"
+    networks:
+      - caddy-projects
+    entrypoint: ["/usr/local/bin/entrypoint.worker.sh"]     # <— WORKER MODE
+    depends_on:
+      - finance
+    env_file:
+      - .env
+
+  finance_hq:
+    container_name: finance-hq
+    image: finance-hq
+    build:
+      context: .
+      dockerfile: ./docker/common/Dockerfile-hq
+      target: development
+    ports:
+      - "${FINANCE_HQ_PORT:-9104}:${FINANCE_HQ_PORT:-9104}"
+    volumes:
+      - ./repositories:/app/repositories
+      - ./app:/app/app
+      - ./projects/finance-hq:/app/projects/finance-hq
+      - ./config:/app/config
+      - ./public:/app/public
+      - ./routes:/app/routes
+      - ./database:/app/database
+      - ./routes/api-hq.php:/app/routes/api.php
+      - ./.env.hq:/app/.env
+      - ./composer_hq.json:/app/composer.json
+      - finance_hq_storage:/app/storage
+    extra_hosts:
+      - "host.docker.internal:host-gateway"
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD-SHELL", "curl -f http://localhost:9104 || exit 1"]
+    networks:
+      - caddy-projects
+    entrypoint: ["/usr/local/bin/entrypoint.hq.sh"]
+    env_file:
+      - .env.hq
+    environment:
+        PHP_INI_SCAN_DIR: /usr/local/etc/php/conf.d
+        PHP_UPLOAD_MAX_FILESIZE: 10M
+        PHP_POST_MAX_SIZE: 10M
+
+networks:
+  caddy-projects:
+    external: true
+
+volumes:  
+  finance_storage:
+  finance_listener:
+  finance_hq_storage:
+  # finance_hq_storage:
