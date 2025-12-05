@@ -1,0 +1,17 @@
+{
+    "name": "hanafalah/module-funding",
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleFunding\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "hamzah nur al falah",
+            "email": "hamzahnafalah@gmail.com"
+        }
+    ],
+    "require": {
+        "hanafalah/laravel-support": "dev-main"
+    }
+}

@@ -1,0 +1,29 @@
+{
+    "name": "hanafalah/klinik-starterpack",
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\KlinikStarterpack\\": "src/"
+        },
+        "files":[
+            "src/helper.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "hamzah",
+            "email": "hamzahnafalah@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hanafalah\\KlinikStarterpack\\KlinikStarterpackServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/microtenant": "dev-main",
+        "hanafalah/satu-sehat": "dev-main"
+    }
+}

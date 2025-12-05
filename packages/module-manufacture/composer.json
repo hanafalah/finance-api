@@ -1,0 +1,18 @@
+{
+    "name": "hanafalah/module-manufacture",
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleManufacture\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "hamzah nur al falah",
+            "email": "hamzahnafalah@gmail.com"
+        }
+    ],
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/module-item": "dev-main"
+    }
+}

@@ -37,7 +37,7 @@
         ],
         "psr-4": {
             "App\\": "app/",
-            "Projects\\Hq\\": "projects/hq/src/",
+            "Projects\\FinanceHq\\": "projects/finance-hq/src/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
         }
@@ -94,9 +94,9 @@
     "minimum-stability": "dev",
     "prefer-stable": true,
     "repositories": {
-        "projects/hq": {
+        "projects/finance-hq": {
             "type": "path",
-            "url": "projects/hq",
+            "url": "projects/finance-hq",
             "optimize": {
                 "symlink": true
             }
@@ -115,13 +115,6 @@
                 "symlink": true
             }
         },
-        "hanafalah/module-medic-service": {
-            "type": "path",
-            "url": "repositories/module-medic-service",
-            "options": {
-                "symlink": true
-            }
-        },
         "hanafalah/module-card-identity": {
             "type": "path",
             "url": "repositories/module-card-identity",
@@ -129,23 +122,9 @@
                 "symlink": true
             }
         },
-        "hanafalah/wellmed-product": {
-            "type": "path",
-            "url": "repositories/wellmed-product",
-            "options": {
-                "symlink": true
-            }
-        },
         "hanafalah/laravel-stub": {
             "type": "path",
             "url": "repositories/laravel-stub",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/wellmed-feature": {
-            "type": "path",
-            "url": "repositories/wellmed-feature",
             "options": {
                 "symlink": true
             }
@@ -167,13 +146,6 @@
         "hanafalah/laravel-support": {
             "type": "path",
             "url": "repositories/laravel-support",
-            "optimize": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-service": {
-            "type": "path",
-            "url": "repositories/module-service",
             "optimize": {
                 "symlink": true
             }
@@ -279,13 +251,6 @@
         "hanafalah/module-payment": {
             "type": "path",
             "url": "repositories/module-payment",
-            "options": {
-                "symlink": true
-            }
-        },
-        "hanafalah/module-payer": {
-            "type": "path",
-            "url": "repositories/module-payer",
             "options": {
                 "symlink": true
             }

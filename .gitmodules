@@ -76,3 +76,12 @@
 [submodule "projects/finance-hq"]
 	path = projects/finance-hq
 	url = git@github.com:hanafalah/finance-hq.git
+[submodule "repositories/laravel-xendit"]
+	path = repositories/laravel-xendit
+	url = git@github.com:hanafalah/laravel-xendit.git
+[submodule "repositories/module-profession"]
+	path = repositories/module-profession
+	url = git@github.com:hanafalah/module-profession.git
+[submodule "repositories/module-regional"]
+	path = repositories/module-regional
+	url = git@github.com:hanafalah/module-regional.git

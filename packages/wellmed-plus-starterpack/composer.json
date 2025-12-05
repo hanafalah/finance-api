@@ -1,0 +1,29 @@
+{
+    "name": "hanafalah/wellmed-plus-starterpack",
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\WellmedPlusStarterpack\\": "src/"
+        },
+        "files":[
+            "src/helper.php"
+        ]
+    },
+    "authors": [
+        {
+            "name": "hamzah",
+            "email": "hamzahnafalah@gmail.com"
+        }
+    ],
+    "extra": {
+        "laravel": {
+            "providers": [
+                "Hanafalah\\WellmedPlusStarterpack\\WellmedPlusStarterpackServiceProvider"
+            ]
+        }
+    },
+    "require": {
+        "hanafalah/wellmed-lite-starterpack": "dev-main",
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/wellmed-feature": "dev-main"
+    }
+}

@@ -1,0 +1,53 @@
+{
+    "repositories" : {
+        "hanafalah/microtenant": {
+            "type": "path",
+            "url": "repositories/microtenant",
+            "optimize" : {
+                "symlink": true
+            }
+        },
+        "hanafalah/api-helper":{
+            "type": "path",
+            "url" : "repositories/api-helper",
+            "options" : {
+                "symlink": true
+            }
+        },
+        "hanafalah/laravel-feature":{
+            "type": "path",
+            "url" : "repositories/laravel-feature",
+            "options" : {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-user":{
+            "type": "path",
+            "url" : "repositories/module-user",
+            "options" : {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-regional":{
+            "type": "path",
+            "url" : "repositories/module-regional",
+            "options" : {
+                "symlink": true
+            }
+        },
+        "hanafalah/module-workspace":{
+            "type": "path",
+            "url" : "repositories/module-workspace",
+            "options" : {
+                "symlink": true
+            }
+        },
+        "hanafalah/laravel-permission":{
+            "type": "path",
+            "url" : "repositories/laravel-permission",
+            "options" : {
+                "symlink": true
+            }
+        }
+    }
+}

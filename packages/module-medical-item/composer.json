@@ -1,0 +1,23 @@
+{
+    "name": "hanafalah/module-medical-item",
+    "description": "module for medical item in klinik or puskesmas",
+    "type": "library",
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/module-item": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleMedicalItem\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hamzah",
+            "email": "hamzahnafalah@gmail.com"
+        }
+    ],
+    "license": "MIT",
+    "minimum-stability": "dev",
+    "prefer-stable": false
+}

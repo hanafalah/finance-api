@@ -1,0 +1,21 @@
+{
+    "name": "hanafalah/module-lab-radiology",
+    "description": "Module Master Lab dan Radiology",
+    "type": "package",
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/module-treatment": "dev-main"
+    },
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleLabRadiology\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Cahaya Gilang Gustina",
+            "email": "cgg01082000@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev"
+}

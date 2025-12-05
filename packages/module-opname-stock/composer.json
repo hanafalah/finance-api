@@ -1,0 +1,22 @@
+{
+    "name": "hanafalah/module-opname-stock",
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleOpnameStock\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hamzah",
+            "email": "a@a.com"
+        }
+    ],
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/module-warehouse": "dev-main",
+        "hanafalah/module-transaction": "dev-main",
+        "hanafalah/module-item": "dev-main"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false
+}

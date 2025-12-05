@@ -1,0 +1,32 @@
+{
+    "name": "hanafalah/module-icd",
+    "description": "bridging to icd who",
+    "type": "package",
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "stichoza/google-translate-php": "^5.2",
+        "hanafalah/module-disease": "dev-main"    
+    },
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleIcd\\": "src/"
+        }
+    },
+    "autoload-dev": {
+        "psr-4": {
+            "Hanafalah\\ModuleIcd\\Tests\\": "tests/"
+        }
+    },
+    "authors": [
+        {
+            "name": "Hamzah Nur Al Falah",
+            "email": "hamzahnafalah@gmail.com"
+        }
+    ],
+    "minimum-stability": "dev",
+    "prefer-stable": false,
+    "require-dev": {
+        "orchestra/testbench": "^9.7",
+        "phpunit/phpunit": "^11.4"
+    }
+}

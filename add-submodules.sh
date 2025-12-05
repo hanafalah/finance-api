@@ -24,6 +24,10 @@ REPOS=(
   "module-support"
   "module-event"
   "module-tax"
+  "laravel-xendit"
+  "module-profession"
+  "module-regional"
+  "microtenant"
 )
 
 BASE_PATH="repositories"

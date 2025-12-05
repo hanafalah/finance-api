@@ -1,0 +1,130 @@
+<?php
+
+namespace Hanafalah\ModulePharmacy\Schemas;
+
+use Hanafalah\ModuleMedicService\Enums\Label;
+use Hanafalah\ModulePatient\Contracts\Data\VisitRegistrationData;
+use Illuminate\Database\Eloquent\Builder;
+use Hanafalah\ModulePharmacy\Contracts\Schemas\PharmacySaleVisitRegistration as ContractsPharmacySaleVisitRegistration;
+use Illuminate\Database\Eloquent\Model;
+use Hanafalah\ModulePatient\Schemas\VisitRegistration;
+use Hanafalah\ModulePharmacy\Enums\PharmacySale\Activity as PharmacySaleActivity;
+use Hanafalah\ModulePharmacy\Enums\PharmacySale\ActivityStatus as PharmacySaleActivityStatus;
+use Hanafalah\ModulePharmacy\Enums\PharmacySaleVisitRegistration\Activity;
+use Hanafalah\ModulePharmacy\Enums\PharmacySaleVisitRegistration\ActivityStatus;
+
+class PharmacySaleVisitRegistration extends VisitRegistration implements ContractsPharmacySaleVisitRegistration
+{
+    protected string $__entity = 'PharmacySaleVisitRegistration';
+    public $pharmacy_sale_visit_registration;
+
+    protected array $__cache = [
+        'show' => [
+            'name'     => 'pharmacy_sale_visit_registration',
+            'tags'     => ['pharmacy_sale_visit_registration', 'pharmacy_sale_visit_registration-show'],
+            'duration' => 60
+        ]
+    ];
+
+    public function prepareStorePharmacySaleVisitRegistration(?array $attributes = null): Model
+    {
+        $attributes ??= request()->all();
+
+        //SET DEFAULT PATIENT TYPE
+        if (!isset($attributes['patient_type_id'])) {
+            $patient_type = $this->PatientTypeModel()->where('name', 'Umum')->firstOrFail();
+            $attributes['patient_type_id'] = $patient_type->getKey();
+        }
+
+        $pharmacy_visit_registration = parent::prepareStoreVisitRegistration($this->requestDTO(VisitRegistrationData::class,[
+            'visit_patient'     => [
+                'patient_id'    => $attributes['patient_id'] ?? null,
+                'flag'          => $this->PharmacySaleModel()::PHARMACY_SALE_VISIT,
+                'reported_at'   => null,
+            ],
+            'patient_type_id'   => $attributes['patient_type_id'] ?? null,
+            'medic_service_id'  => $this->MedicServiceModel()->where('flag', Label::PHARMACY->value)->where('name', 'Instalasi Farmasi')->firstOrFail()->service->getKey(),
+            'medic_services'    => [],
+            'id' => $attributes['id'] ?? null
+        ]));
+        $pharmacy_sale               = $pharmacy_visit_registration->visitPatient;
+
+        //SETUP PATIENT AS CONSUMENT
+        if (isset($attributes['patient_id'])) {
+            $patient = $this->PatientModel()->findOrFail($attributes['patient_id']);
+            $attributes['consument'] = [
+                'phone'          => null,
+                'name'           => $patient->prop_people['name'],
+            ];
+            $consument_attr                   = &$attributes['consument'];
+            $consument_attr['reference_id']   = $patient->getKey();
+            $consument_attr['reference_type'] = $patient->getMorphClass();
+            $attributes['payer_id']           = $patient->prop_company['id'] ?? null;
+        }
+
+        if (isset($attributes['consument']) && isset($attributes['consument']['name'])) {
+            $transaction   = $pharmacy_sale->transaction;
+
+            if (isset($attributes['patient_id'])) {
+                $consument = $this->ConsumentModel()->updateOrCreate([
+                    'reference_id'   => $attributes['consument']['reference_id'] ?? null,
+                    'reference_type' => $attributes['consument']['reference_type'] ?? null
+                ], [
+                    'phone' => $attributes['consument']['phone'] ?? null,
+                    'name'           => $attributes['consument']['name'],
+                ]);
+
+                $consument->setAttribute('prop_patient', $patient->getPropsKey());
+                $consument->save();
+            } else {
+                $consument = $this->ConsumentModel()->updateOrCreate([
+                    'phone' => $attributes['consument']['phone'] ?? null,
+                    'name'           => $attributes['consument']['name'],
+                    'reference_id'   => $attributes['consument']['reference_id'] ?? null,
+                    'reference_type' => $attributes['consument']['reference_type'] ?? null
+                ]);
+            }
+
+            $transaction->transactionHasConsument()->firstOrCreate([
+                'consument_id' => $consument->getKey()
+            ]);
+
+            $props = [
+                'id'    => $consument->getKey(),
+                'name'  => $consument->name,
+                'phone' => $consument->phone
+            ];
+            if (count($consument->getPropsKey() ?? []) > 0) {
+                $props = $this->mergeArray($props, $consument->getPropsKey());
+            }
+
+            $pharmacy_sale->setAttribute('prop_consument', $props);
+            $pharmacy_sale->save();
+
+            $transaction->consument_name = $consument->name;
+            $transaction->setAttribute('prop_consument', $props);
+
+            $transaction->reported_at = now();
+            $transaction->save();
+        }
+
+
+        $pharmacy_visit_registration = $this->PharmacySaleVisitRegistrationModel()->findOrFail($pharmacy_visit_registration->getKey());
+        $pharmacy_sale->pushActivity(PharmacySaleActivity::PHARMACY_SALE_VISIT->value, [PharmacySaleActivityStatus::PHARMACY_SALE_VISIT_DRAFT->value, PharmacySaleActivityStatus::PHARMACY_SALE_VISIT_PROCESSED->value]);
+        $this->toFrontline($pharmacy_sale, $pharmacy_visit_registration);
+        $pharmacy_sale->refresh();
+
+        return $this->pharmacy_sale_visit_registration = $pharmacy_visit_registration;
+    }
+
+    protected function toFrontline(?Model $visit_patient = null, ?Model $pharmacy_visit_registration = null): self
+    {
+        $pharmacy_visit_registration ??= $this->PharmacySaleVisitRegistrationModel()->find(static::$__visit_registration->getKey());
+        $visit_patient               ??= $this->PharmacySaleModel()->find($pharmacy_visit_registration->visit_patient_id);
+        $pharmacy_visit_registration->pushActivity(Activity::PHARMACY_FLOW->value, [ActivityStatus::PHARMACY_FLOW_QUEUE->value, ActivityStatus::PHARMACY_FLOW_FRONTLINE->value]);
+        $this->appPharmacySaleSchema()->preparePushLifeCycleActivity($visit_patient, $pharmacy_visit_registration, 'PHARMACY_FLOW', [
+            'PHARMACY_FLOW_FRONTLINE' => $pharmacy_visit_registration::$activityList[Activity::PHARMACY_FLOW->value . '_' . ActivityStatus::PHARMACY_FLOW_FRONTLINE->value]
+        ]);
+        return $this;
+    }
+}

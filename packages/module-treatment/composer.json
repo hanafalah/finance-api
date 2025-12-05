@@ -1,0 +1,21 @@
+{
+    "name": "hanafalah/module-treatment",
+    "autoload": {
+        "psr-4": {
+            "Hanafalah\\ModuleTreatment\\": "src/"
+        }
+    },
+    "authors": [
+        {
+            "name": "gilang",
+            "email": "cgg01082000@gmail.com"
+        }
+    ],
+    "require": {
+        "hanafalah/laravel-support": "dev-main",
+        "hanafalah/module-transaction": "dev-main",
+        "hanafalah/module-service": "dev-main"
+    },
+    "minimum-stability": "dev",
+    "prefer-stable": false
+}
