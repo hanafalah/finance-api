@@ -101,7 +101,7 @@ return [
 
     'previous_keys' => [
         ...array_filter(
-            explode(',', (string) env('APP_PREVIOUS_KEYS', ''))
+            explode(',', env('APP_PREVIOUS_KEYS', ''))
         ),
     ],
 
@@ -118,9 +118,52 @@ return [
     |
     */
 
+    'impersonate' => [
+        'storage' => [
+            'driver' => 'public'
+        ]
+    ],
+
     'maintenance' => [
         'driver' => env('APP_MAINTENANCE_DRIVER', 'file'),
         'store' => env('APP_MAINTENANCE_STORE', 'database'),
     ],
 
+    'elasticsearch' => [
+        'enabled' => env('ELASTICSEARCH_ENABLED', false),
+        'hosts' => [env('ELLASTIC_HOSTS', 'localhost:9200')],
+        'username' => env('ELLASTIC_USERNAME', 'elastic'),
+        'password' => env('ELLASTIC_PASSWORD', 'password'),
+        'index_prefix' => env('APP_ENV'),
+        'index_separator' => '.',
+        'indexes' => [
+            // 'country' => [
+            //     'name' => 'country'
+            // ],
+            // 'province' => [
+            //     'name' => 'province'
+            // ],
+            // 'district' => [
+            //     'name' => 'district'
+            // ],
+            // 'subdistrict' => [
+            //     'name' => 'subdistrict'
+            // ],
+            // 'village' => [
+            //     'name' => 'village'
+            // ],
+            // 'billing' => [
+            //     'name' => 'billing'
+            // ],
+            // 'invoice' => [
+            //     'name' => 'invoice'
+            // ],
+            // 'refund' => [
+            //     'name' => 'refund'
+            // ],
+            // 'wallet_transaction' => [
+            //     'name' => 'wallet_transaction'
+            // ]
+        ]
+    ]
 ];

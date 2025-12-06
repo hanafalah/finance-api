@@ -1,13 +1,13 @@
 services:
   finance:
-    container_name: finance-app
-    image: finance-app
+    container_name: finance-api
+    image: finance-api
     build:
       context: .
       dockerfile: ./docker/common/Dockerfile
       target: development
     ports:
-      - "${FINANCE_PORT:-9100}:${FINANCE_PORT:-9100}"
+      - "${APP_PORT:-9100}:${APP_PORT:-9100}"
     volumes:
       - ./repositories:/app/repositories
       - ./app:/app/app
@@ -15,9 +15,9 @@ services:
       - ./public:/app/public
       - ./database:/app/database
       - ./projects/finance-gateway:/app/projects/finance-gateway
-      - ./routes/api.php:/app/routes/api.php
-      - ./composer.json:/app/composer.json
-      - ./.env:/app/.env
+      - ./routes/api-gateway.php:/app/routes/api.php
+      - ./composer_gateway.json:/app/composer.json
+      - ./.env.gateway:/app/.env
       - finance_storage:/app/storage
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -26,9 +26,9 @@ services:
       test: ["CMD-SHELL", "curl -f http://localhost:9100 || exit 1"]
     networks:
       - caddy-projects
-    entrypoint: ["/usr/local/bin/entrypoint.sh"]
+    entrypoint: ["/usr/local/bin/entrypoint.gateway.sh"]
     env_file:
-      - .env
+      - .env.gateway
     environment:
         PHP_INI_SCAN_DIR: /usr/local/etc/php/conf.d
         PHP_UPLOAD_MAX_FILESIZE: 10M
@@ -36,7 +36,7 @@ services:
 
   finance_listener:
     container_name: finance-listener
-    image: finance-app
+    image: finance-api
     volumes:
       - ./repositories:/app/repositories
       - ./app:/app/app
@@ -44,9 +44,9 @@ services:
       - ./public:/app/public
       - ./database:/app/database
       - ./projects/finance-gateway:/app/projects/finance-gateway
-      - ./routes/api.php:/app/routes/api.php
-      - ./composer.json:/app/composer.json
-      - ./.env:/app/.env
+      - ./routes/api-gateway.php:/app/routes/api.php
+      - ./composer_gateway.json:/app/composer.json
+      - ./.env.gateway:/app/.env
       - finance_storage:/app/storage
     extra_hosts:
       - "host.docker.internal:host-gateway"
@@ -59,7 +59,7 @@ services:
     depends_on:
       - finance
     env_file:
-      - .env
+      - .env.gateway
 
   finance_hq:
     container_name: finance-hq
@@ -69,7 +69,7 @@ services:
       dockerfile: ./docker/common/Dockerfile-hq
       target: development
     ports:
-      - "${FINANCE_HQ_PORT:-9104}:${FINANCE_HQ_PORT:-9104}"
+      - "9104:9104"
     volumes:
       - ./repositories:/app/repositories
       - ./app:/app/app

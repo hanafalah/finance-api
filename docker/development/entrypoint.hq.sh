@@ -6,7 +6,7 @@ echo "==> Entrypoint HQ running..."
 # -------------------------
 # Load .env if exists
 # -------------------------
-ENV_FILE="/app/.env"
+ENV_FILE="/app/.env.hq"
 if [ -f "$ENV_FILE" ]; then
     echo "==> Loading environment from $ENV_FILE"
     export $(grep -v '^#' "$ENV_FILE" | xargs)

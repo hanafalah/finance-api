@@ -31,16 +31,17 @@ WORKDIR /app
 COPY . .
 
 RUN if [ -f "composer.lock" ]; then rm composer.lock; fi
+RUN if [ -f "composer_gateway.lock" ]; then rm composer.lock; fi
 
 # Install Composer deps
 RUN curl -sS https://getcomposer.org/installer | php \
         -- --install-dir=/usr/local/bin --filename=composer \
     && if [ "$APP_ENV" = "production" ]; then \
-         COMPOSER=composer.json composer install \
+         COMPOSER=composer_gateway.json composer install \
             --no-dev --optimize-autoloader --no-interaction \
             --no-progress --prefer-dist --no-scripts; \
        else \
-         COMPOSER=composer.json composer install \
+         COMPOSER=composer_gateway.json composer install \
             --optimize-autoloader --no-interaction \
             --no-progress --prefer-dist --no-scripts; \
        fi
@@ -51,8 +52,8 @@ RUN curl -sS https://getcomposer.org/installer | php \
 # -------------------------
 FROM builder AS production
 
-COPY ./docker/production/entrypoint.sh /usr/local/bin/entrypoint.sh
-RUN chmod +x /usr/local/bin/entrypoint.sh
+COPY ./docker/production/entrypoint.gateway.sh /usr/local/bin/entrypoint.gateway.sh
+RUN chmod +x /usr/local/bin/entrypoint.gateway.sh
 
 COPY ./storage /app/storage-init
 COPY --from=builder /app /app
@@ -70,7 +71,7 @@ RUN mkdir -p /app/storage /app/bootstrap/cache \
 WORKDIR /app
 USER www-data
 
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.gateway.sh"]
 EXPOSE 9100 9101 9102 9103
 
 
@@ -100,13 +101,13 @@ COPY ./docker/development/supervisor-listener.conf /etc/supervisor/conf.d/listen
 # 🟣 Copy entrypoints
 # ----------------------------------
 COPY ./docker/common/frankenphp-fpm.conf /etc/frankenphp/conf.d/
-COPY ./docker/development/entrypoint.sh /usr/local/bin/entrypoint.sh
+COPY ./docker/development/entrypoint.gateway.sh /usr/local/bin/entrypoint.gateway.sh
 COPY ./docker/development/entrypoint.worker.sh /usr/local/bin/entrypoint.worker.sh
 
-RUN chmod +x /usr/local/bin/entrypoint.sh \
+RUN chmod +x /usr/local/bin/entrypoint.gateway.sh \
     && chmod +x /usr/local/bin/entrypoint.worker.sh
 
 # Default entrypoint = (web)
-ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
+ENTRYPOINT ["/usr/local/bin/entrypoint.gateway.sh"]
 
 EXPOSE 9100 9101 9102 9103
